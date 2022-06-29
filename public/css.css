@@ -1,0 +1,60 @@
+.multiplayer__room{
+    display : flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+}
+
+.multiplayer__room__listRoom{
+    display : flex;
+    flex-direction: column;
+    width: 100%;
+    height: 80vh;
+    border : 1px solid #fff;
+}
+
+.multiplayer__room__Waiting{
+    display : none;
+    flex-direction: column;
+    width: 100%;
+    height: 80vh;
+    background-color: rgb(129, 128, 128);
+}
+
+
+
+.waiting__header{
+    display : flex;
+    flex-direction: column;
+    background-color: rgba(189, 187, 187, 0.664);
+}
+
+.waiting__body{
+    display : flex;
+    flex-direction: column;
+    background-color: rgba(189, 187, 187, 0.664);
+}
+.waiting__option{
+    display : flex;
+    flex-direction: column;
+    background-color: rgba(189, 187, 187, 0.664);
+}
+
+.waiting__option__admin{
+    display : none;
+}
+
+.multiplayer__editor__form{
+    display : none;
+}
+
+
+.multiplayer__lobbie__item{
+    width: 100%;
+    height: 40px;
+}
+
+.multiplayer__lobbie__item:hover {
+    background-color: rgba(128, 128, 128, 0.534);
+    cursor: pointer;
+}

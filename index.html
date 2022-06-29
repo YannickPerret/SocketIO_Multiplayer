@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://localhost:8080/socket.io/socket.io.js"> </script>
+    <script src="client.js" defer></script>
+    <link rel="stylesheet" href="css.css" />
+
+    <title>Document</title>
+
+</head>
+<body>
+
+    <div class="multiplayer__room">
+        <div id="room/error"></div>
+
+        <div class="multiplayer__room__listRoom" id="multiplayer/listRoom">
+            <div>
+                <button onclick="multiplayerAddEditorRoom()">Créer un serveur</button>
+                <form class="multiplayer__editor__form" id="multiplayer/addRoom" action="">
+                    <label>title </label><input type="text" id="roomCreatedTitle" required/>
+                    <label>description </label><input type="text" id="roomCreatedDescription" required/>
+                    <label>max player</label><input type="number" id="roomCreatedMaxPlayer" min="0" max="150" required/>
+                    <label>Visibility </label><input type="radio" value="true" name="roomCreatedIsPublic" checked/>Public
+                    <input type="radio" value="false" name="roomCreatedIsPublic" />Private
+             
+                        
+                    <button>Créer mon lobbie</button>
+                    <button onclick="multiplayerRemoveEditorRoom()">Retour</button>
+    
+                </form>
+            </div>
+            <br />
+            <br />
+    
+            <div>
+                <h2>Liste des lobbies disponibles :</h2>
+                <button onclick="multiplayerRefreshRoom()">Refresh Lobbies</button>
+                <table id="multiplayer/roomList">
+                </table>
+            </div>
+        </div>
+    
+        <div class="multiplayer__room__Waiting">
+
+            <div class="waiting__header">
+                <h2 id="multiplayer/room/title"></h2>
+                <p id="multiplayer/room/description"></p>
+                <em id="multiplayer/room/currentPlayerInServer"></em>
+            </div>
+            <div class="waiting__body">
+                <table>
+                    <tr>
+                        <th>Id Player</th>
+                    </tr>
+                    <tbody id="mulltiplayer/room/playerlist">
+                        
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="waiting__option">
+                <button>Se connecter au serveur</button>
+                <button onclick="multiplayerLeaveRoom()">Se déconnecter au serveur</button>
+
+                <div class="waiting__option__admin">
+                    <button onclick="multiplayerDeleteRoom()">Supprimer le serveur</button>
+                </div>
+            </div>
+            <!-- Information sur le serveur : - Règle, infor joueur, carte, mode, etc.. -->
+            <!-- listes des joueurs connecté ou en attente -->
+
+            <!-- Boutton pour se deconnecter ou pour se connecter -->
+
+
+        </div>
+    </div>
+    
+</body>
+</html>
