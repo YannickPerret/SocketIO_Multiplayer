@@ -1,5 +1,4 @@
 const socket = io();
-const ioClient = io.connect("http://localhost:8080")
 
 let currentRoom = {}
 
@@ -10,11 +9,9 @@ let isOnServeur = false
 socket.on('room/error', (msg) => {
     setTimeout(() => {
         document.getElementById('room/error').innerHTML = ''
-    }, 10000)
+    }, 7000)
     document.getElementById('room/error').innerHTML = msg
 })
-
-
 
 // FUNCTION UTILS
 const closeCreateEditor = () => {
@@ -78,10 +75,10 @@ socket.on('room/refreshPlayer', (_currentRoom) => {
 
     document.getElementById('multiplayer/room/currentPlayerInServer').innerHTML = `connecté : ${currentRoom.currentPlayer} / ${currentRoom.maxPlayer}`
     
-    document.getElementById('mulltiplayer/room/playerlist').innerHTML = ''
+    document.getElementById('multiplayer/room/playerlist').innerHTML = ''
 
     currentRoom.listPlayer.map((element) => {
-        document.getElementById('mulltiplayer/room/playerlist').innerHTML += `<tr>
+        document.getElementById('multiplayer/room/playerlist').innerHTML += `<tr>
             <td>${element}</td>
         </tr>`;
     })
@@ -155,9 +152,7 @@ socket.on('room/refreshList', (room) => {
     }else{
         tableRoom.innerHTML = "<p>Malheureusement aucun serveur n'est disponible ! Commencez par en créer un</p>"
     }
-    
 })
-
 
 window.multiplayerRefreshRoom = () => {
     socket.emit('room/refreshList')
@@ -165,6 +160,41 @@ window.multiplayerRefreshRoom = () => {
 
 window.addEventListener('load', () => {
     socket.emit('room/refreshList')
+    socket.emit('server/refresh')
+
+})
+
+
+/**
+ *  Rooms messagerie 
+ * 
+ *  send message
+ */
+document.getElementById('multiplayer/room/messages/send').addEventListener('submit', (e) => {
+    let messageInput = document.getElementById('multiplayer/room/messages/inputMessage')
+    e.preventDefault()
+    if(messageInput.value){
+        socket.emit('room/messages/send', messageInput.value)
+        messageInput.value = ''
+    }
+})
+
+socket.on('room/message/lists', (data) =>{
+    let item = document.createElement('li');
+    item.textContent = `${data.identifiant} : ${data.message}`
+    document.getElementById('multiplayer/room/messages/lists').appendChild(item);
+    let updateItems = document.querySelectorAll('.waiting__room__messageList__list')
+    
+    let listUl = document.getElementById('multiplayer/room/messages/lists')
+    document.querySelector(".waiting__room__messageList__list>li:last-child").scrollIntoView()
 })
 
 //rafraichissement auto du serveur via le client
+
+setInterval(() => {
+    socket.emit('server/refresh')
+}, 60000)
+
+socket.on('client/refresh', (data) => {
+    document.querySelector('.multiplayer__onlinePlayer').innerHTML = `Monde : ${data.onlinePlayer} joueurs connectés`
+})

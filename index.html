@@ -14,6 +14,7 @@
 <body>
 
     <div class="multiplayer__room">
+        <div class="multiplayer__onlinePlayer"></div>
         <div id="room/error"></div>
 
         <div class="multiplayer__room__listRoom" id="multiplayer/listRoom">
@@ -44,37 +45,46 @@
         </div>
     
         <div class="multiplayer__room__Waiting">
-
             <div class="waiting__header">
                 <h2 id="multiplayer/room/title"></h2>
                 <p id="multiplayer/room/description"></p>
                 <em id="multiplayer/room/currentPlayerInServer"></em>
+                <em id="multiplayer/room/currentPlayerInServer"></em>
             </div>
-            <div class="waiting__body">
-                <table>
-                    <tr>
-                        <th>Id Player</th>
-                    </tr>
-                    <tbody id="mulltiplayer/room/playerlist">
-                        
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="waiting__option">
-                <button>Se connecter au serveur</button>
-                <button onclick="multiplayerLeaveRoom()">Se déconnecter au serveur</button>
-
-                <div class="waiting__option__admin">
-                    <button onclick="multiplayerDeleteRoom()">Supprimer le serveur</button>
+            <div class="waiting__room__container">
+                <div class="waiting__room__left">
+                    <div class="waiting__body">
+                        <table>
+                            <tr>
+                                <th>Id Player</th>
+                            </tr>
+                            <tbody id="multiplayer/room/playerlist">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+        
+                    <div class="waiting__option">
+                        <button>Se connecter au serveur</button>
+                        <button onclick="multiplayerLeaveRoom()">Se déconnecter au serveur</button>
+        
+                        <div class="waiting__option__admin">
+                            <button onclick="multiplayerDeleteRoom()">Supprimer le serveur</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="waiting__room__right">
+                    <h3>Tchat en ligne</h3>
+                    <div class="waiting__room__messageList">
+                        <ul id="multiplayer/room/messages/lists" class="waiting__room__messageList__list"></ul>
+                    </div>
+                    <div class="waiting__room__messageSend">
+                        <form id="multiplayer/room/messages/send" action="">
+                            <input id="multiplayer/room/messages/inputMessage" autocomplete="off" /><button>Envoyer</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <!-- Information sur le serveur : - Règle, infor joueur, carte, mode, etc.. -->
-            <!-- listes des joueurs connecté ou en attente -->
-
-            <!-- Boutton pour se deconnecter ou pour se connecter -->
-
-
         </div>
     </div>
     

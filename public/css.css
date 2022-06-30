@@ -18,22 +18,27 @@
     flex-direction: column;
     width: 100%;
     height: 80vh;
-    background-color: rgb(129, 128, 128);
 }
-
-
 
 .waiting__header{
     display : flex;
     flex-direction: column;
-    background-color: rgba(189, 187, 187, 0.664);
+    background-color: rgb(129, 128, 128);
+    height: 20%;
 }
 
-.waiting__body{
+.waiting__room__container{
+    display : flex;
+    flex-direction: row;
+    height: 80%;
+}
+.waiting__room__left{
     display : flex;
     flex-direction: column;
-    background-color: rgba(189, 187, 187, 0.664);
+    flex : 2;
+    background-color: rgb(129, 128, 128);
 }
+
 .waiting__option{
     display : flex;
     flex-direction: column;
@@ -43,6 +48,28 @@
 .waiting__option__admin{
     display : none;
 }
+.waiting__room__right{
+    display : flex;
+    flex-direction: column;
+    flex: 1;
+    height: 750px;
+    width: 85%;
+    background-color: #fff;
+    justify-content: space-evenly;
+}
+
+.waiting__room__messageList ul li {
+    list-style-type: none;
+}
+.waiting__room__messageList{
+    flex:3;
+    overflow-y: auto;
+}
+.waiting__room__messageSend{
+    flex:1;
+}
+
+
 
 .multiplayer__editor__form{
     display : none;

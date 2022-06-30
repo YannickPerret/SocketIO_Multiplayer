@@ -4,6 +4,8 @@ const http = require('http')
 const server = http.createServer(app)
 const {Server} = require('socket.io')
 const {v4 : uuidv4 } = require('uuid')
+const path = require('path')
+
 
 const io = new Server(server, {
     cors:{
@@ -11,21 +13,10 @@ const io = new Server(server, {
     }
 })
 
-const path = require('path')
-
-
-
 
 let sequenceNumberByClient = new Map()
-
 let roomList = new Map()
 
-let players = {
-    id:0,
-    username:"",
-    password:"",
-    state:0
-}
 
 let roomOptions = {
     id:'',
@@ -66,9 +57,8 @@ const refreshListServer = () => {
     return tempLobbies
 }
 
-io.on('connection', (socket) => {
-    //console.info(`Client connected [id=${socket.id}]`);
 
+io.on('connection', (socket) => {
     sequenceNumberByClient.set(socket, 1);
 
     socket.on('room/create', (room) => {
@@ -101,29 +91,30 @@ io.on('connection', (socket) => {
         if([...roomList.values()].find(item => item.id === roomId)){
 
             let room = roomList.get(roomId)
+            if(room){
+                if(!room.listPlayer.includes(socket.id)){
 
-            if(!room.listPlayer.includes(socket.id)){
-
-                if((room.currentPlayer + 1) <= room.maxPlayer){
-
-                    room.currentPlayer = room.currentPlayer + 1
-                    room.listPlayer.push(socket.id)
-
-                    socket.join(roomId)
-                    roomList.set(roomId, room)
-
-                    await setTimeout(() => {
-                        socket.emit('room/join', room)
-                        io.sockets.in(room.id).emit('room/refreshPlayer', room)
-
-                    }, 1000)
+                    if((room.currentPlayer + 1) <= room.maxPlayer){
+    
+                        room.currentPlayer = room.currentPlayer + 1
+                        room.listPlayer.push(socket.id)
+    
+                        socket.join(roomId)
+                        roomList.set(roomId, room)
+    
+                        await setTimeout(() => {
+                            socket.emit('room/join', room)
+                            io.sockets.in(room.id).emit('room/refreshPlayer', room)
+    
+                        }, 1000)
+                    }
+                    else{
+                        socket.emit('room/error', `Le lobbie que vous tentez de rejoindre est complet`)
+                    }
                 }
                 else{
-                    socket.emit('room/error', `Le lobbie que vous tentez de rejoindre est complet`)
+                    socket.emit('room/error', `Vous êtes déjà dans ce serveur !`)
                 }
-            }
-            else{
-                socket.emit('room/error', `Vous êtes déjà dans ce serveur !`)
             }
         }
         else
@@ -170,15 +161,50 @@ io.on('connection', (socket) => {
         socket.emit('room/refreshList', refreshListServer())
     })
 
-    socket.on("disconnect", () => {
+    socket.on('room/messages/send', (message) => {
 
-        if([...roomList.values()].find(item => item.listPlayer === socket)){
-
+        if(message !== ''){
+            let roomId = 0
+            roomList.forEach((element, index) => {
+                element.listPlayer.map(item => {
+                    if(item === socket.id){
+                        roomId = index
+                    }
+                })
+            })
+            if(roomId !== 0){
+                io.sockets.in(roomId).emit('room/message/lists', {identifiant : socket.id, message: message})
+            }
         }
-        sequenceNumberByClient.delete(socket);
-        
-        //console.info(`client gone [id=${socket.id}]`);
-        
+    })
+
+    socket.on("disconnect", () => {
+        if(roomList.size > 0){
+            let roomIndex;
+            roomList.forEach((element, index) => {
+                element.listPlayer.map(item => {
+                    if(item === socket.id){
+                       roomIndex =  index
+                    }
+                })
+            })
+    
+            let roomTemps = roomList.get(roomIndex)
+            if(roomTemps){
+
+                roomTemps.listPlayer = roomTemps.listPlayer.filter(e => e !== socket.id)
+                roomTemps.currentPlayer = (roomTemps.currentPlayer - 1) <= 0 ? 0 : roomTemps.currentPlayer - 1
+
+                roomList.set(roomIndex, roomTemps)
+                //Envoyer un broadcast pour refresh les player de chacun
+                io.sockets.in(roomIndex).emit('room/refreshPlayer', roomList.get(roomIndex))
+            }
+        }
+        sequenceNumberByClient.delete(socket);        
+    })
+
+    socket.on('server/refresh', () => {
+        socket.emit('client/refresh', {onlinePlayer:sequenceNumberByClient.size})
     })
 })
 
